@@ -11,7 +11,7 @@
           {{ data.item.name }}
         </template>
         <template v-slot:cell(poster)="data">
-          <b-container fluid class="p-4 bg-dark">
+          <b-container fluid class="p-4 bg-light">
             <b-row>
               <b-col>
                 <b-img thumbnail :src="data.item.poster" fluid width="180" rounded alt="Постер"/>
@@ -60,6 +60,8 @@
         :ok-title="dialogSubmitBtnTitle"
         ok-variant="success"
         @ok="handleOk"
+        @cancel="resetForm"
+        @close="resetForm"
       >
         <b-form ref="form"  v-if="show" @submit.stop.prevent="handleSubmit">
           <b-form-group id="name-input-group" label="Название спектакля:" label-for="name">
@@ -143,7 +145,7 @@
             ></b-form-file>
           </b-form-group>
 
-          <b-container fluid class="p-4 bg-dark">
+          <b-container fluid class="p-4 bg-light">
             <b-row>
               <b-col>
                 <b-img
@@ -358,7 +360,7 @@ export default {
       })
         .then((response) => {
           this.spectacles.updateSpectacleById({ spectacleId, data })
-          this.selectedSpectacleId = null
+          this.resetForm()
           this.$bvToast.toast('Данные о спектакле успешно обновлены', {
             title: 'Уведомление',
             autoHideDelay: 5000,
@@ -368,6 +370,13 @@ export default {
         .catch((err) => {
           console.log(err)
         })
+    },
+
+    resetForm () {
+      this.selectedSpectacleId = null
+      for (const field in this.form) {
+        if (this.form[field]) this.form[field] = null
+      }
     },
 
     handleOk (bvModalEvt) {
