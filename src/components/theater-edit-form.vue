@@ -168,12 +168,19 @@ export default {
         .then((response) => {
           this.$bvToast.toast('Данные о театре успешно обновлены', {
             title: 'Уведомление',
+            variant: 'success',
             autoHideDelay: 5000,
             appendToast: true
           })
         })
         .catch((err) => {
           console.log(err)
+          this.$bvToast.toast('На сервере возникла ошибка. Изменения не сохранены', {
+            title: 'Ошибка',
+            autoHideDelay: 5000,
+            variant: 'danger',
+            appendToast: true
+          })
         })
     },
     onReset (evt) {

@@ -13,7 +13,7 @@ export default new Vuex.Store({
     apiClient: ApiClient,
     token: localStorage.getItem('token') || null,
     user: {},
-    theaterId: 12,
+    theaterId: 8,
     mainPagePremieres: new TheaterSpectacles([]),
     genres: genres,
     prices: prices,

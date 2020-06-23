@@ -451,8 +451,6 @@ export default {
       data.firstExtraPhoto = firstExtraPhotoUrl
       data.secondExtraPhoto = secondExtraPhotoUrl
 
-      console.log(data.genre)
-
       await this.createSpectacle({
         name: data.name,
         description: data.description,
@@ -465,9 +463,11 @@ export default {
         theater_id: this.$store.state.theaterId
       })
         .then((response) => {
+          data.id = response.spectacle.id
           this.spectacles.addSpectacle(data)
           this.$bvToast.toast('Спектакль успешно добавлен', {
             title: 'Уведомление',
+            variant: 'success',
             autoHideDelay: 5000,
             appendToast: true
           })
