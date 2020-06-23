@@ -1,0 +1,40 @@
+@import '~bootstrap';
+@import '~bootstrap-vue';
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+html, body {
+  font-family: Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #282828;
+  background-color: #ffffff;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 21px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+h1 {
+  font-size: 50px;
+  line-height: 59px;
+}
+
+h4 {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  &:focus {
+    outline: none !important;
+  }
+}
