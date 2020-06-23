@@ -195,6 +195,11 @@ export class TheaterSpectacles {
     this.list.push(Spectacle.produceSpectacle(rawData))
   }
 
+  deleteSpectacle (spectacleId) {
+    const index = this.list.findIndex((spectacle) => spectacle.id === spectacleId)
+    this.list.splice(index, 1)
+  }
+
   static produceTheaterSpectacles (rawData) {
     return new this(rawData)
   }

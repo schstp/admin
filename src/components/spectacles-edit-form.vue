@@ -44,7 +44,7 @@
             >
               <b-icon icon="pencil" class="mb-2 h3"></b-icon>
             </div>
-            <div class="delete-btn" v-b-tooltip.hover title="Удалить">
+            <div class="delete-btn" v-b-tooltip.hover title="Удалить" @click="confirmAndDeteleSpectacle(data.item.id)">
               <b-icon icon="x-circle" class="mb-2 h3" variant="danger"></b-icon>
             </div>
           </div>
@@ -240,8 +240,10 @@ export default {
       'uploadSpectacleFirstExtraPhoto',
       'uploadSpectacleSecondExtraPhoto',
       'updateSpectacle',
-      'createSpectacle'
+      'createSpectacle',
+      'deleteSpectacle'
     ]),
+
     readURL (e) {
       const input = e.target
       if (input.files && input.files[0]) {
@@ -254,6 +256,7 @@ export default {
         this.isPosterChanged = true
       }
     },
+
     readExtrasURL (e) {
       const input = e.target
       if (input.files && input.files[0]) {
@@ -285,11 +288,13 @@ export default {
         }
       }
     },
+
     changeModalData (spectacleId) {
       const spectacle = this.spectacles.findSpectacleById(spectacleId)
       this.form = { ...spectacle }
       this.selectedSpectacleId = spectacle.id
     },
+
     async uploadPoster () {
       const formData = new FormData()
       let url = null
@@ -303,6 +308,7 @@ export default {
         })
       return url
     },
+
     async uploadFirstExtraPhoto () {
       const formData = new FormData()
       let url = null
@@ -316,6 +322,7 @@ export default {
         })
       return url
     },
+
     async uploadSecondExtraPhoto () {
       const formData = new FormData()
       let url = null
@@ -329,6 +336,7 @@ export default {
         })
       return url
     },
+
     async updateSpectacleData ({ posterUrl, firstExtraPhotoUrl, secondExtraPhotoUrl }) {
       const data = this.form
       data.poster = posterUrl
@@ -361,10 +369,12 @@ export default {
           console.log(err)
         })
     },
+
     handleOk (bvModalEvt) {
       bvModalEvt.preventDefault()
       this.handleSubmit()
     },
+
     handleSubmit () {
       if (!this.checkFormValidity()) {
         return
@@ -374,9 +384,11 @@ export default {
         this.$bvModal.hide('editing-modal')
       })
     },
+
     checkFormValidity () {
       return this.$refs.form.checkValidity()
     },
+
     async onSubmit () {
       this.$emit('loading-state-changed', true)
       if (this.selectedSpectacleId === null) {
@@ -416,6 +428,7 @@ export default {
       this.isFirstExtraPhotoChanged = false
       this.isSecondExtraPhotoChanged = false
     },
+
     async createNewSpectacle () {
       let posterUrl = null
       let firstExtraPhotoUrl = null
@@ -445,6 +458,7 @@ export default {
       this.isFirstExtraPhotoChanged = false
       this.isSecondExtraPhotoChanged = false
     },
+
     async addSpectacle ({ posterUrl, firstExtraPhotoUrl, secondExtraPhotoUrl }) {
       const data = this.form
       data.poster = posterUrl
@@ -480,6 +494,46 @@ export default {
             variant: 'danger',
             appendToast: true
           })
+        })
+    },
+
+    confirmAndDeteleSpectacle (spectacleId) {
+      const ref = this
+      this.$bvModal.msgBoxConfirm('Вы уверены, что хотите удалить спектакль?', {
+        size: 'md',
+        buttonSize: 'md',
+        okVariant: 'danger',
+        okTitle: 'Да',
+        cancelTitle: 'Отмена',
+        centered: true
+      })
+        .then(confirmed => {
+          ref.$emit('loading-state-changed', true)
+          if (confirmed) {
+            this.deleteSpectacle(spectacleId)
+              .then((response) => {
+                this.spectacles.deleteSpectacle(spectacleId)
+                this.$bvToast.toast('Спектакль успешно удален', {
+                  title: 'Уведомление',
+                  variant: 'success',
+                  autoHideDelay: 5000,
+                  appendToast: true
+                })
+              })
+              .catch((err) => {
+                console.log(err)
+                this.$bvToast.toast('На сервере возникла ошибка. Не удалось удалить спектакль', {
+                  title: 'Ошибка',
+                  autoHideDelay: 5000,
+                  variant: 'danger',
+                  appendToast: true
+                })
+              })
+          }
+          ref.$emit('loading-state-changed', false)
+        })
+        .catch(err => {
+          console.log(err)
         })
     }
   }

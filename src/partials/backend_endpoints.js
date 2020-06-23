@@ -12,7 +12,7 @@ export const BACKEND_ENDPOINTS = {
   addSpectacle: { method: 'post', url: 'spectacle' },
   getSpectacle: { method: 'get', url: 'spectacle?id={spectacleId}' },
   getSpectacles: { method: 'get', url: 'spectacles?theater_id={theaterId}' },
-  deleteSpectacle: { method: 'delete', url: 'spectacles/{spectacleId}' },
+  deleteSpectacle: { method: 'delete', url: 'spectacle?id={spectacleId}' },
   uploadSpectaclePoster: { method: 'post', url: 'file/spectacle/poster' },
   uploadSpectacleFirstExtraPhoto: { method: 'post', url: 'file/spectacle/preview' },
   uploadSpectacleSecondExtraPhoto: { method: 'post', url: 'file/spectacle/slider-poster' },

@@ -138,5 +138,15 @@ export default {
       if (err.response.status === 404) return Promise.reject(err)
       throw err
     }
+  },
+
+  async deleteSpectacle ({ rootGetters, commit }, spectacleId) {
+    try {
+      const data = await rootGetters.api.deleteSpectacle({ args: { spectacleId: spectacleId } })
+      return Promise.resolve(data)
+    } catch (err) {
+      if (err.response.status === 404) return Promise.reject(err)
+      throw err
+    }
   }
 }
