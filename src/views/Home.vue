@@ -1,12 +1,17 @@
 <template>
   <div class="home">
     <b-navbar toggleable="sm" type="dark" variant="dark">
-      <b-navbar-brand href="#">Спектакль.ru</b-navbar-brand>
+      <b-navbar-brand href="#">
+        Спектакль.<span class="appendix">ru</span> | {{ theater !== null ? theater.name : '' }}
+      </b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav class="ml-auto">
+        <b-navbar-nav class="ml-auto alert-link">
+          <b-link href="http://host1813162.hostland.pro/" target="_blank">Посмотреть сайт</b-link>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-3">
           <b-button @click="confirmLogout">Выйти</b-button>
         </b-navbar-nav>
       </b-collapse>
@@ -17,7 +22,7 @@
       </div>
       <div class="content-wrapper">
         <b-overlay
-          :show="loadingState"
+          :show="loadingState && (theaterId !== null)"
           rounded
           opacity="0.6"
           spinner-variant="dark"
@@ -36,6 +41,17 @@
                   v-else-if="isSpectaclesTabChosen"
                   :spectacles="spectacles">
                 </spectacles-edit-from>
+                <events-edit-form
+                  v-on:loading-state-changed="changeLoadingState"
+                  v-else-if="isEventsTabChosen"
+                  :events="events"
+                >
+                </events-edit-form>
+                <tickets-edit-form
+                  v-on:loading-state-changed="changeLoadingState"
+                  v-else-if="isTicketsTabChosen"
+                  :events="tickets">
+                </tickets-edit-form>
               </div>
           </div>
         </div>
@@ -50,6 +66,8 @@ import { mapActions, mapState } from 'vuex'
 import sidebar from '../components/sidebar'
 import TheaterEditForm from '../components/theater-edit-form.vue'
 import SpectaclesEditFrom from '../components/spectacles-edit-form.vue'
+import EventsEditForm from '../components/events-edit-form.vue'
+import TicketsEditForm from '../components/tickets-edit-form.vue'
 
 export default {
   name: 'Home',
@@ -57,7 +75,9 @@ export default {
   components: {
     sidebar,
     TheaterEditForm,
-    SpectaclesEditFrom
+    SpectaclesEditFrom,
+    EventsEditForm,
+    TicketsEditForm
   },
 
   data () {
@@ -65,9 +85,12 @@ export default {
       loadingState: false,
       theater: null,
       spectacles: null,
+      events: null,
+      tickets: null,
       isTheaterTabChosen: false,
       isSpectaclesTabChosen: false,
-      isTicketsTabChosen: false
+      isTicketsTabChosen: false,
+      isEventsTabChosen: false
     }
   },
 
@@ -78,7 +101,10 @@ export default {
   methods: {
     ...mapActions(['deauthorizeUser', 'getTheater', 'getTheaterSpectacles']),
     refreshData (tabName) {
-      tabName === 'theater' ? this.loadTheater() : tabName === 'spectacles' ? this.loadSpectacles() : this.loadTickets()
+      if (tabName === 'theater') this.loadTheater()
+      else if (tabName === 'spectacles') this.loadSpectacles()
+      else if (tabName === 'events') this.loadEvents()
+      else if (tabName === 'tickets') this.loadTickets()
     },
     changeLoadingState (state) {
       this.loadingState = state
@@ -137,12 +163,37 @@ export default {
       this.isTicketsTabChosen = false
       this.loadingState = false
     },
+    loadEvents () {
+      this.loadingState = true
+      this.events = null
+      this.isTheaterTabChosen = false
+      this.isSpectaclesTabChosen = false
+      this.isEventsTabChosen = true
+      this.loadingState = false
+    },
     loadTickets () {
+      this.loadingState = true
+      this.tickets = null
+      this.isTheaterTabChosen = false
+      this.isSpectaclesTabChosen = false
+      this.isEventsTabChosen = false
+      this.isTicketsTabChosen = true
+      this.loadingState = false
+    }
+  },
+
+  watch: {
+    theaterId (val) {
+      if (val !== null) {
+        this.loadTheater()
+      }
     }
   },
 
   created () {
-    this.loadTheater()
+    if (this.theaterId !== null) {
+      this.loadTheater()
+    }
   }
 }
 </script>
@@ -174,6 +225,10 @@ export default {
           padding: 20px 10px;
         }
       }
+    }
+
+    .appendix {
+      color: #E5D691;
     }
   }
 </style>

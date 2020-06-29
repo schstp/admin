@@ -7,6 +7,9 @@
         <b-list-group-item button :active="spectaclesActive" @click="changeActiveTabToSpectacles">
           Спектакли
         </b-list-group-item>
+        <b-list-group-item button :active="eventsActive" @click="changeActiveTabToEvents">
+          Сеансы
+        </b-list-group-item>
         <b-list-group-item button :active="ticketsActive" @click="changeActiveTabToTickets">
           Билеты
         </b-list-group-item>
@@ -22,13 +25,15 @@ export default {
     return {
       theaterActive: true,
       spectaclesActive: false,
-      ticketsActive: false
+      ticketsActive: false,
+      eventsActive: false
     }
   },
 
   methods: {
     changeActiveTabToTheater () {
       if (this.theaterActive) return
+      this.eventsActive = false
       this.spectaclesActive = false
       this.ticketsActive = false
       this.theaterActive = true
@@ -36,6 +41,7 @@ export default {
     },
     changeActiveTabToSpectacles () {
       if (this.spectaclesActive) return
+      this.eventsActive = false
       this.spectaclesActive = true
       this.ticketsActive = false
       this.theaterActive = false
@@ -43,10 +49,19 @@ export default {
     },
     changeActiveTabToTickets () {
       if (this.ticketsActive) return
+      this.eventsActive = false
       this.spectaclesActive = false
       this.ticketsActive = true
       this.theaterActive = false
       this.$emit('tab-changed', 'tickets')
+    },
+    changeActiveTabToEvents () {
+      if (this.eventsActive) return
+      this.eventsActive = true
+      this.spectaclesActive = false
+      this.ticketsActive = false
+      this.theaterActive = false
+      this.$emit('tab-changed', 'events')
     }
   }
 }

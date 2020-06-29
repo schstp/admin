@@ -3,19 +3,29 @@ import { Theater, TheaterSpectacles } from '../partials/models.js'
 export default {
   async loginByToken ({ rootGetters, commit, state }) {
     const data = await rootGetters.api.getUserByToken()
-    if (data) commit('setUser', { rowUser: data, token: state.token })
+    if (data) {
+      if (data.role !== 1) {
+        this.dispatch('deauthorizeUser')
+      } else {
+        this.state.theaterId = data.theater_id
+        commit('setUser', { rowUser: data, token: state.token })
+      }
+    }
   },
 
   async authorizeUser ({ rootGetters, commit }, authorizationData) {
     const data = await rootGetters.api.authorizeUser({ data: authorizationData })
     if (data.has_erros) return false
-
-    const rowUser = data.user
-    const token = data.token
-    rootGetters.api.setToken(token)
-    commit('setUser', { rowUser, token })
-
-    return true
+    if (data.user.role !== 1) {
+      return Promise.reject(new Error('PermissionsError'))
+    } else {
+      this.state.theaterId = data.user.theater_id
+      const rowUser = data.user
+      const token = data.token
+      rootGetters.api.setToken(token)
+      commit('setUser', { rowUser, token })
+      return true
+    }
   },
 
   async createUser ({ rootGetters }, rowUser) {

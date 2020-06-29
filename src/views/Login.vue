@@ -63,10 +63,6 @@ export default {
     submitFormButtonTitle: {
       type: String,
       default: 'Войти'
-    },
-    registrationRedirectLinkTitle: {
-      type: String,
-      default: 'Нет аккаунта? Зарегистрироваться'
     }
   },
 
